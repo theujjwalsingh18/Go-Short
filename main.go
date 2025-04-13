@@ -18,7 +18,6 @@ type URL struct {
 	CreationDate time.Time `json:"creation_date"`
 }
 
-
 var urlDB = make(map[string]URL)
 
 func HashURL(OriginalURL string) string {
@@ -32,7 +31,7 @@ func HashURL(OriginalURL string) string {
 
 func createURL(originalURL string) string {
 	shortURL := HashURL(originalURL)
-	id := shortURL 
+	id := shortURL
 	urlDB[id] = URL{
 		ID:           id,
 		OriginalURL:  originalURL,
@@ -60,7 +59,7 @@ func ShortURLHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	res, err := http.Get(data.URL)
-	if err != nil{
+	if err != nil {
 		http.Error(w, "Invalid URL ", http.StatusNotFound)
 		return
 	}
@@ -87,26 +86,26 @@ func RedirectURLHandler(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	// fmt.Println("URL shortener code ")
-	
-	// Serve static files from the "static" directory
-    fs := http.FileServer(http.Dir("./static"))
-    http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-    // Handle root ("/") to serve index.html
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        http.ServeFile(w, r, "./static/index.html")
-    })
+	// Serve static files from the "static" directory
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	// Handle root ("/") to serve index.html
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./static/index.html")
+	})
 
 	// Created handler function to handle all requests to the URL's ("/")
 	http.HandleFunc("/sort", ShortURLHandler)
 	http.HandleFunc("/rd/", RedirectURLHandler)
 
-	// Start the HTTP server on port 
+	// Start the HTTP server on port
 	port := os.Getenv("PORT")
-	if port == ""{
+	if port == "" {
 		port = "3000"
 	}
-	fmt.Println("Starting server on port ...",port)
+	fmt.Println("Starting server on port ...", port)
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		fmt.Println("Error on starting server:", err)
