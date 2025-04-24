@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"time"
 )
@@ -20,25 +21,32 @@ type URL struct {
 
 var urlDB = make(map[string]URL)
 
-func HashURL(OriginalURL string) string {
+func generateShortURL(originalURL string) string {
 	hasher := md5.New()
-	hasher.Write([]byte(OriginalURL)) // Converts the url string to a byte slice
-	data := hasher.Sum(nil)
-	hash := hex.EncodeToString(data)
-	fmt.Println("hash url : ", hash[:5])
+	hasher.Write([]byte(originalURL))
+	hash := hex.EncodeToString(hasher.Sum(nil))
 	return hash[:5]
 }
 
-func createURL(originalURL string) string {
-	shortURL := HashURL(originalURL)
+func createURL(originalURL string) (string, error) {
+	if _, err := url.ParseRequestURI(originalURL); err != nil {
+		return "", errors.New("invalid URL")
+	}
+
+	shortURL := generateShortURL(originalURL)
 	id := shortURL
+	if _, ok := urlDB[id]; ok {
+		// Handle hash collision
+		return "", errors.New("hash collision")
+	}
+
 	urlDB[id] = URL{
 		ID:           id,
 		OriginalURL:  originalURL,
 		ShortURL:     shortURL,
 		CreationDate: time.Now(),
 	}
-	return shortURL
+	return shortURL, nil
 }
 
 func getURL(id string) (URL, error) {
@@ -49,55 +57,61 @@ func getURL(id string) (URL, error) {
 	return url, nil
 }
 
-func ShortURLHandler(w http.ResponseWriter, r *http.Request) {
-	var data struct {
-		URL string `json:"url"`
-	}
-	err := json.NewDecoder(r.Body).Decode(&data)
-	if err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+func handleRoot(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		if len(r.URL.Path) > 1 {
+			shortURL := r.URL.Path[1:]
+			if len(shortURL) == 5 {
+				url, err := getURL(shortURL)
+				if err != nil {
+					http.Error(w, "Page Not Found", http.StatusNotFound)
+					return
+				}
+				http.Redirect(w, r, url.OriginalURL, http.StatusFound)
+				return
+			} else {
+				http.Error(w, "Page Not Found", http.StatusNotFound)
+				return
+			}
+		} else {
+			http.ServeFile(w, r, "./static/index.html")
+			return
+		}
+	} else if r.Method == http.MethodPost {
+		var data struct {
+			URL string `json:"url"`
+		}
+		err := json.NewDecoder(r.Body).Decode(&data)
+		if err != nil {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+
+		shortURL, err := createURL(data.URL)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		response := struct {
+			ShortURL string `json:"short_url"`
+		}{ShortURL: shortURL}
+
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(response)
+		return
+	} else {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	res, err := http.Get(data.URL)
-	if err != nil {
-		http.Error(w, "Invalid URL ", http.StatusNotFound)
-		return
-	}
-
-	defer res.Body.Close()
-
-	shortURL := createURL(data.URL)
-	response := struct {
-		ShortURL string `json:"short_url"`
-	}{ShortURL: shortURL}
-
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(response)
-}
-
-func RedirectURLHandler(w http.ResponseWriter, r *http.Request) {
-	id := r.URL.Path[len("/rd/"):]
-	url, err := getURL(id)
-	if err != nil {
-		http.Error(w, "Invalid request", http.StatusNotFound)
-	}
-	http.Redirect(w, r, url.OriginalURL, http.StatusFound)
 }
 
 func main() {
-	// Serve static files from the "static" directory
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./static/index.html")
-	})
+	http.HandleFunc("/", handleRoot)
 
-	// Created handler function to handle all requests to the URL's ("/")
-	http.HandleFunc("/sort", ShortURLHandler)
-	http.HandleFunc("/rd/", RedirectURLHandler)
-
-	// Start the HTTP server on port
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"

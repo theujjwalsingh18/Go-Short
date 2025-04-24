@@ -71,8 +71,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to shorten URL using the Go server endpoint
   async function shortenUrl(url) {
+    console.log("Hellloooo")
     try {
-      const response = await fetch("/sort", {
+      const response = await fetch("/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -86,10 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
 
-      // The Go server returns { short_url: "hash" }
-      // We need to construct the full URL with the /rd/ prefix
-      const baseUrl = window.location.origin + "/rd/";
-
+      const baseUrl = window.location.origin + "/";
+      console.log(baseUrl);
       return {
         originalUrl: url,
         shortUrl: baseUrl + data.short_url,
