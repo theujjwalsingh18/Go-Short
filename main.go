@@ -25,8 +25,8 @@ func HashURL(OriginalURL string) string {
 	hasher.Write([]byte(OriginalURL)) // Converts the url string to a byte slice
 	data := hasher.Sum(nil)
 	hash := hex.EncodeToString(data)
-	fmt.Println("hash url : ", hash[:8])
-	return hash[:8]
+	fmt.Println("hash url : ", hash[:5])
+	return hash[:5]
 }
 
 func createURL(originalURL string) string {
@@ -85,13 +85,10 @@ func RedirectURLHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// fmt.Println("URL shortener code ")
-
 	// Serve static files from the "static" directory
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	// Handle root ("/") to serve index.html
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "./static/index.html")
 	})
