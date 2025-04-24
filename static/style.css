@@ -70,7 +70,7 @@ body {
 }
 
 .dark-mode .features {
-  background-color: var(--dark-card-bg);
+  background-color: #2f2f2f;
 
   .feature-card {
     border: 2px solid var(--primary-gradient-start);
@@ -96,20 +96,11 @@ body {
   color: var(--dark-card-text);
 }
 
+.dark-mode .section-title{
+  color: #9ca3af;
+}
+
 .dark-mode .footer {
-  background: linear-gradient(to right, #333, #444);
-  color: #7589cc;
-
-  span {
-    background-image: linear-gradient(
-      to right,
-      var(--primary-gradient-start),
-      var(--primary-gradient-end)
-    );
-    background-clip: text;
-    color: transparent;
-  }
-
   a {
     color: #c055d6db;
   }
@@ -725,7 +716,7 @@ body {
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--gray-900);
+  color: var(--black);
 }
 
 .feature-card p {
