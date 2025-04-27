@@ -49,6 +49,10 @@ body {
   line-height: 1.5;
   background-color: var(--gray-50);
   color: var(--gray-800);
+  position: relative;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 .dark-mode {
@@ -56,6 +60,10 @@ body {
   color: var(--dark-text);
 }
 
+.darkbtn:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+  transform: scale(1.1);
+}
 .dark-mode .hero-description {
   color: var(--dark-text);
 }
@@ -83,7 +91,6 @@ body {
 .dark-mode .url-input {
   background-color: var(--dark-input-bg);
   color: var(--dark-input-text);
-  /* color: #a7c7fa; */
   border-color: var(--dark-input-border);
 }
 
@@ -96,27 +103,27 @@ body {
   color: var(--dark-card-text);
 }
 
-.dark-mode .section-title{
+.dark-mode .section-title {
   color: #9ca3af;
 }
 
-.dark-mode .footer {
-  a {
-    color: #c055d6db;
-  }
-}
-
 .darkbtn {
-  position: absolute;
+  position: fixed;
   right: 0px;
   background-color: #7589cc;
   border: none;
   margin-right: 2vh;
   padding: 10px;
   cursor: pointer;
-  z-index: 1000;
+  width: 40px; /* Set width of the button */
+  height: 40px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 50%;
   box-shadow: var(--shadow);
+  background-color: transparent;
+  transition: 0.3s ease, transform 0.3s ease;
 }
 
 .dark-mode .themeToggle {
@@ -532,9 +539,13 @@ body {
   margin-bottom: 0.25rem;
 }
 
+.dark-mode .url-display{
+  color: whitesmoke;
+}
 .url-display {
   font-size: 0.875rem;
-  color: var(--gray-600);
+  /* color: #ff00e3; */
+  color: #4f46e5;;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -542,7 +553,6 @@ body {
 }
 
 .short-url {
-  color: var(--primary-color);
   font-weight: 500;
   text-decoration: none;
 }
@@ -734,6 +744,7 @@ body {
   color: white;
   opacity: 0;
   animation: fadeIn 0.5s forwards 0.8s;
+  position: relative;
 }
 
 .footer-container {
@@ -741,6 +752,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 @media (min-width: 768px) {
@@ -881,4 +893,131 @@ body {
 
 .toast-error i {
   color: var(--red-500);
+}
+
+/* For Devloper Deatils */
+
+.user-box {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  padding: 10px;
+  border: 1px solid blanchedalmond;
+  border-radius: 8px;
+  background: linear-gradient(to right, #0463ff, #343438);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  color: white;
+  display: none;
+  max-width: 90vw;
+  min-width: 300px;
+  right: 0;
+  bottom: 0;
+}
+.user-info {
+  margin: 0px 2px;
+  width: 150px;
+  height: 150px;
+  background-image: url("./ujjwal_img.jpg");
+  background-size: cover;
+  background-position: center;
+  border-radius: 20px;
+  animation: fadeInScale 2s forwards;
+}
+
+.show-box {
+  display: flex;
+}
+.user-details pre {
+  color: #f0f0f0;
+  margin: 0;
+  font-family: "Courier New", monospace;
+  text-align: left; /* Keep text normal */
+}
+#str {
+  margin-left: 40px;
+}
+
+.user-details {
+  p {
+    color: #f0f0f0;
+  }
+  .var-highlight {
+    color: #569cd6;
+  }
+  .var {
+    color: #8cc4e3;
+  }
+  .data {
+    color: burlywood;
+  }
+  .string-highlight {
+    color: burlywood;
+  }
+}
+
+.user-details pre {
+  margin: 0;
+  font-size: 0.9rem;
+  font-family: "Courier New", Courier, monospace;
+}
+
+#typewriter {
+  font-size: 1em;
+  margin: 0;
+  font-family: "Courier New", monospace;
+  white-space: pre-wrap;
+  position: relative;
+
+  &:after {
+    content: "|";
+    position: absolute;
+    animation: blink 500ms linear infinite alternate;
+  }
+}
+
+@-webkit-keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-box {
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    left: 50%;
+    transform: translate(-50%);
+    width: 350px;
+    min-height: 17vh;
+  }
+  .user-info {
+    margin: 0 auto;
+    width: 100px;
+    height: 100px;
+  }
+  #typewriter {
+    font-size: 0.5em;
+  }
 }

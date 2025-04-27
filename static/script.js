@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // DOM Elements
   const shortenForm = document.getElementById("shortenForm");
   const urlInput = document.getElementById("urlInput");
   const urlError = document.getElementById("urlError");
@@ -23,6 +22,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const themeToggle = document.getElementById("themeToggle");
   const themeIcon = document.getElementById("themeIcon");
+
+  const typer = document.getElementById("typewriter");
+  const userLabel = document.getElementById("userLabel");
+  const userBox = document.getElementById("userBox");
+  const ageSpan = document.getElementById("age-span");
 
   themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark-mode");
@@ -68,10 +72,31 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
   }
+  // Validate URL Response function
+  function checkURLRes(url) {
+    try {
+      fetch(url, { method: "HEAD" })
+        .then((response) => {
+          if (response.ok) {
+            console.log(response.status);
+            return true;
+          } else {
+            console.log("URL is not reachable. Status: " + response.status);
+            return false;
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          return false;
+        });
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  }
 
   // Function to shorten URL using the Go server endpoint
   async function shortenUrl(url) {
-    console.log("Hellloooo")
     try {
       const response = await fetch("/", {
         method: "POST",
@@ -88,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       const baseUrl = window.location.origin + "/";
-      console.log(baseUrl);
       return {
         originalUrl: url,
         shortUrl: baseUrl + data.short_url,
@@ -118,6 +142,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isValidUrl(url)) {
       urlError.textContent =
         "Please enter a valid URL including http:// or https://";
+      return;
+    }
+
+    if (!checkURLRes(url)) {
+      urlError.textContent = "Invalid or blocked URL.";
       return;
     }
 
@@ -219,4 +248,128 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 300);
     }, 3000);
   }
+
+  // Developer box
+  var typingTimeout;
+
+  function setupTypewriter(t) {
+    var HTML = t.innerHTML;
+    t.innerHTML = "";
+    var cursorPosition = 0,
+      tag = "",
+      writingTag = false,
+      tagOpen = false,
+      typeSpeed = 100,
+      tempTypeSpeed = 0;
+
+    var type = function () {
+      if (writingTag === true) {
+        tag += HTML[cursorPosition];
+      }
+
+      if (HTML[cursorPosition] === "<") {
+        tempTypeSpeed = 0;
+        if (tagOpen) {
+          tagOpen = false;
+          writingTag = true;
+        } else {
+          tag = "";
+          tagOpen = true;
+          writingTag = true;
+          tag += HTML[cursorPosition];
+        }
+      }
+      if (!writingTag && tagOpen) {
+        tag.innerHTML += HTML[cursorPosition];
+      }
+      if (!writingTag && !tagOpen) {
+        if (HTML[cursorPosition] === " ") {
+          tempTypeSpeed = 0;
+        } else {
+          tempTypeSpeed = Math.random() * typeSpeed + 50;
+        }
+        t.innerHTML += HTML[cursorPosition];
+      }
+      if (writingTag === true && HTML[cursorPosition] === ">") {
+        tempTypeSpeed = Math.random() * typeSpeed + 50;
+        writingTag = false;
+        if (tagOpen) {
+          var newSpan = document.createElement("span");
+          t.appendChild(newSpan);
+          newSpan.innerHTML = tag;
+          tag = newSpan.firstChild;
+        }
+      }
+
+      cursorPosition += 1;
+      if (cursorPosition < HTML.length - 1) {
+        typingTimeout = setTimeout(type, tempTypeSpeed);
+      }
+    };
+
+    return {
+      type: type,
+      reset: function () {
+        t.innerHTML = "";
+        cursorPosition = 0;
+      },
+    };
+  }
+
+  function calculateAge(birthYear) {
+    const today = new Date();
+    return today.getFullYear() - birthYear;
+  }
+
+  const age = calculateAge(2005);
+  typer.innerHTML = typer.innerHTML.replace("{{age}}", age);
+
+  let isBoxVisible = false;
+  var originalTypewriterHTML = typer.innerHTML;
+  let typewriter = setupTypewriter(typer);
+
+  function showBox() {
+    userBox.style.display = "flex";
+    userLabel.style.pointerEvents = "none";
+    isBoxVisible = true;
+    typewriter.reset();
+    typewriter.type();
+  }
+
+  function hideBox() {
+    userBox.style.display = "none";
+    userLabel.style.pointerEvents = "auto";
+    isBoxVisible = false;
+
+    clearTimeout(typingTimeout);
+    typer.innerHTML = "";
+    typer.innerHTML = originalTypewriterHTML;
+    typewriter = setupTypewriter(typer);
+  }
+
+  userLabel.addEventListener("click", function (event) {
+    if (!isBoxVisible) {
+      showBox();
+    }
+  });
+
+  userLabel.addEventListener("mouseover", function (event) {
+    if (!isBoxVisible) {
+      showBox();
+    }
+  });
+
+  document.addEventListener("click", function (event) {
+    if (
+      isBoxVisible &&
+      !userBox.contains(event.target) &&
+      event.target !== userLabel
+    ) {
+      hideBox();
+    }
+  });
+
+  userBox.addEventListener("click", function (event) {
+    event.stopPropagation();
+  });
 });

@@ -27,9 +27,9 @@
           <h1 class="logo-text">Go-Short URL Shortener</h1>
         </div>
         <div>
-          <button id="themeToggle" class="darkbtn">
+          <label id="themeToggle" class="darkbtn">
             <i id="themeIcon" class="fas fa-moon"></i>
-          </button>
+          </label>
         </div>
       </header>
 
@@ -198,13 +198,24 @@
           </div>
 
           <div class="footer-links">
-            <a href="https://theujjwalsingh.tech" target="_blank">Developer</a>
+            <label id="userLabel">Developer</label>
             <a href="https://github.com/theujjwalsingh18" target="_blank"
               >Github</a
             >
           </div>
         </div>
       </footer>
+      <div id="userBox" class="user-box">
+        <div class="user-info"></div>
+        <div class="user-details">
+          <pre id="typewriter">
+    <span class="var-highlight">const</span> <sapn class="var">developer </sapn> = {
+        <sapn class="var">name: </sapn><span class="string-highlight">"Ujjwal Kumar Singh"</span>,
+        <sapn class="var">age: </sapn><span class="string-highlight">{{age}}</span>,
+        <sapn class="var">email: </sapn><span class="string-highlight">"theujjwalsinghh@gmail.com"</span>
+      }; </pre>
+        </div>
+      </div>
     </div>
   </body>
   <script src="/static/script.js"></script>

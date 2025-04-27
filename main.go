@@ -29,25 +29,35 @@ func generateShortURL(originalURL string) string {
 }
 
 func createURL(originalURL string) (string, error) {
-	if _, err := url.ParseRequestURI(originalURL); err != nil {
-		return "", errors.New("invalid URL")
-	}
+    if _, err := url.ParseRequestURI(originalURL); err != nil {
+        return "", errors.New("invalid URL")
+    }
 
-	shortURL := generateShortURL(originalURL)
-	id := shortURL
-	if _, ok := urlDB[id]; ok {
-		// Handle hash collision
-		return "", errors.New("hash collision")
-	}
+    // Check if the original URL already exists in the DB
+    for _, u := range urlDB {
+        if u.OriginalURL == originalURL {
+            return u.ShortURL, nil // Return the existing short URL
+        }
+    }
 
-	urlDB[id] = URL{
-		ID:           id,
-		OriginalURL:  originalURL,
-		ShortURL:     shortURL,
-		CreationDate: time.Now(),
-	}
-	return shortURL, nil
+    shortURL := generateShortURL(originalURL)
+    id := shortURL
+
+    // Check for hash collision (for very unlikely cases)
+    if _, ok := urlDB[id]; ok {
+        return "", errors.New("hash collision")
+    }
+
+    // Save the new URL in the database
+    urlDB[id] = URL{
+        ID:           id,
+        OriginalURL:  originalURL,
+        ShortURL:     shortURL,
+        CreationDate: time.Now(),
+    }
+    return shortURL, nil
 }
+
 
 func getURL(id string) (URL, error) {
 	url, ok := urlDB[id]
