@@ -3,8 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>goURL URL Shortener</title>
+    <title>URL Shortener</title>
     <link rel="stylesheet" href="/static/style.css" />
+    <link rel="icon" type="image/png" href="/images/goURL.png" />
+
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
@@ -12,13 +14,11 @@
   </head>
   <body>
     <div class="app">
-      <!-- Background decoration elements -->
       <div class="background-decorations">
         <div class="bg-blob bg-blob-1"></div>
         <div class="bg-blob bg-blob-2"></div>
       </div>
 
-      <!-- Header -->
       <header class="header">
         <div class="logo-container">
           <div class="logo-icon">
@@ -32,10 +32,7 @@
           </label>
         </div>
       </header>
-
-      <!-- Main content -->
       <main class="main">
-        <!-- Main header and description -->
         <div class="hero">
           <h2 class="hero-title">
             Make your links <span class="gradient-text">shorter</span>
@@ -46,7 +43,6 @@
           </p>
         </div>
 
-        <!-- Illustration for larger screens -->
         <div class="hero-icon">
           <svg
             viewBox="0 0 200 200"
@@ -60,8 +56,6 @@
             />
           </svg>
         </div>
-
-        <!-- URL Form -->
         <div id="urlForm" class="card url-form">
           <form id="shortenForm">
             <div class="form-group">
@@ -90,8 +84,6 @@
             </button>
           </form>
         </div>
-
-        <!-- Result Card (Hidden by default) -->
         <div id="resultCard" class="card result-card hidden">
           <div class="result-header">
             <div class="success-icon">
@@ -132,7 +124,6 @@
           </div>
         </div>
 
-        <!-- Error Card (Hidden by default) -->
         <div id="errorCard" class="card error-card hidden">
           <div class="error-header">
             <div class="error-icon">
@@ -152,12 +143,10 @@
         </div>
       </main>
 
-      <!-- Features Section -->
       <section class="features">
         <div class="container">
           <h2 class="section-title">
-            Why Choose <span class="gradient-text">goUrl</span> URL
-            Shortener?
+            Why Choose <span class="gradient-text">goUrl</span> URL Shortener?
           </h2>
 
           <div class="features-grid">
@@ -188,10 +177,12 @@
         </div>
       </section>
 
-      <!-- Footer -->
       <footer class="footer">
         <div class="container footer-container">
           <div class="footer-logo">
+            <div class="logoimg">
+              <img src="/images/goURL_GIF.gif" alt="goURL Gif" />
+            </div>
             <i class="fas fa-link"></i>
             <span>goURL</span>
             <p>Make your URLs manageable.</p>

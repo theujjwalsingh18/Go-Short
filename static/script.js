@@ -41,14 +41,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Check for saved theme preference
   if (localStorage.getItem("theme") === "dark") {
     document.body.classList.add("dark-mode");
     themeIcon.classList.remove("fa-moon");
     themeIcon.classList.add("fa-sun");
   }
 
-  // Show/hide clear button based on input content
   urlInput.addEventListener("input", () => {
     if (urlInput.value.trim() !== "") {
       clearButton.style.display = "flex";
@@ -63,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
     urlError.textContent = "";
   });
 
-  // Validate URL function
   function isValidUrl(url) {
     try {
       new URL(url);
@@ -73,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Function to shorten URL using the Go server endpoint
   async function shortenUrl(url) {
     try {
       const response = await fetch("/", {
@@ -101,17 +97,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Form submission
   shortenForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Reset error state
     urlError.textContent = "";
 
-    // Get the URL
     const url = urlInput.value.trim();
 
-    // Validate URL
     if (!url) {
       urlError.textContent = "Please enter a URL";
       return;
@@ -128,7 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadingSpinner.classList.remove("hidden");
 
     try {
-      // Call the API endpoint
       const response = await shortenUrl(url);
 
       originalUrlDisplay.textContent = response.originalUrl;
@@ -152,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Copy button
   copyButton.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(shortUrlDisplay.textContent);
@@ -162,7 +152,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Share button
   shareButton.addEventListener("click", async () => {
     if (navigator.share) {
       try {
@@ -183,7 +172,6 @@ document.addEventListener("DOMContentLoaded", () => {
   resetButton.addEventListener("click", resetToForm);
   tryAgainButton.addEventListener("click", resetToForm);
 
-  // Function to reset to form view
   function resetToForm() {
     resultCard.classList.add("hidden");
     errorCard.classList.add("hidden");
@@ -192,7 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
     clearButton.style.display = "none";
   }
 
-  // Toast notification function
   function showToast(message, isError = false) {
     const toast = document.createElement("div");
     toast.className = "toast " + (isError ? "toast-error" : "toast-success");
@@ -204,10 +191,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const text = document.createElement("span");
     text.textContent = message;
-
     toast.appendChild(icon);
     toast.appendChild(text);
-
     document.body.appendChild(toast);
 
     setTimeout(() => {
@@ -222,9 +207,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 3000);
   }
 
-  // Developer box
   var typingTimeout;
-
   function setupTypewriter(t) {
     var HTML = t.innerHTML;
     t.innerHTML = "";
@@ -239,7 +222,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (writingTag === true) {
         tag += HTML[cursorPosition];
       }
-
       if (HTML[cursorPosition] === "<") {
         tempTypeSpeed = 0;
         if (tagOpen) {
@@ -273,13 +255,11 @@ document.addEventListener("DOMContentLoaded", () => {
           tag = newSpan.firstChild;
         }
       }
-
       cursorPosition += 1;
       if (cursorPosition < HTML.length - 1) {
         typingTimeout = setTimeout(type, tempTypeSpeed);
       }
     };
-
     return {
       type: type,
       reset: function () {
