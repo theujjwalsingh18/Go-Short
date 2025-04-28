@@ -7,7 +7,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"os"
 	"time"
 )
@@ -29,10 +28,6 @@ func generateShortURL(originalURL string) string {
 }
 
 func createURL(originalURL string) (string, error) {
-    if _, err := url.ParseRequestURI(originalURL); err != nil {
-        return "", errors.New("invalid URL")
-    }
-
     // Check if the original URL already exists in the DB
     for _, u := range urlDB {
         if u.OriginalURL == originalURL {

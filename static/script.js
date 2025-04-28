@@ -72,28 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return false;
     }
   }
-  // Validate URL Response function
-  function checkURLRes(url) {
-    try {
-      fetch(url, { method: "HEAD" })
-        .then((response) => {
-          if (response.ok) {
-            console.log(response.status);
-            return true;
-          } else {
-            console.log("URL is not reachable. Status: " + response.status);
-            return false;
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          return false;
-        });
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  }
 
   // Function to shorten URL using the Go server endpoint
   async function shortenUrl(url) {
@@ -142,11 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!isValidUrl(url)) {
       urlError.textContent =
         "Please enter a valid URL including http:// or https://";
-      return;
-    }
-
-    if (!checkURLRes(url)) {
-      urlError.textContent = "Invalid or blocked URL.";
       return;
     }
 
