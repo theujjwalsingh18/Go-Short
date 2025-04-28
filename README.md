@@ -1,1 +1,1 @@
-"# Go-Short" 
+"# goURL - An URL Shortner in Golang." 
