@@ -111,6 +111,8 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 func main() {
 	fs := http.FileServer(http.Dir("./static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	fs2 := http.FileServer(http.Dir("./images"))
+	http.Handle("/images/", http.StripPrefix("/images/", fs2))
 
 	http.HandleFunc("/", handleRoot)
 
